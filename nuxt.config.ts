@@ -17,6 +17,9 @@ export default defineNuxtConfig({
   },
 
   app: {
+    baseURL: '/te-so-la/',  
+    buildAssetsDir: '/_nuxt/',
+
     head: {
       charset: 'utf-8',
       viewport: 'width=device-width, initial-scale=1',
