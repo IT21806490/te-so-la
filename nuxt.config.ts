@@ -1,30 +1,14 @@
+import { globby } from 'globby'
+import path from 'path'
+
 export default defineNuxtConfig({
   devtools: { enabled: false },
 
   modules: [
     '@nuxt/content',
     '@nuxtjs/tailwindcss',
-    'nuxt-simple-sitemap',          // ← auto-generates /sitemap.xml
   ],
 
-  // Sitemap configuration
-  sitemap: {
-    siteUrl: 'https://techsolvelab.com',
-    // Auto-discovers all prerendered routes including /blog/post-slug
-    autoLastmod: true,
-    // Priority hints for Google
-    urls: [
-      { loc: '/',               priority: 1.0, changefreq: 'weekly'  },
-      { loc: '/blog',           priority: 0.9, changefreq: 'daily'   },
-      { loc: '/about',          priority: 0.5, changefreq: 'monthly' },
-      { loc: '/contact',        priority: 0.4, changefreq: 'monthly' },
-      { loc: '/privacy-policy', priority: 0.3, changefreq: 'monthly' },
-    ],
-  },
-
-  // Base URL — set via env in GitHub Actions workflow.
-  // With custom domain (techsolvelab.com) this is '/'.
-  // Without custom domain it is '/te-so-la/' (your repo name).
   app: {
     baseURL: process.env.NUXT_APP_BASE_URL || '/',
 
@@ -70,23 +54,37 @@ export default defineNuxtConfig({
   nitro: {
     prerender: {
       crawlLinks: true,
-      routes: [
-        '/',
-        '/blog',
-        '/about',
-        '/contact',
-        '/privacy-policy',
-        '/sitemap.xml',       // ← pre-build the sitemap as a static file
-      ],
       failOnError: false,
+      // Statically prerender all these routes at build time
+      routes: async () => {
+        // Discover every .md file in content/posts and turn it into a route
+        const files = await globby('content/posts/*.md', {
+          cwd: path.resolve(process.cwd()),
+        })
+        const postRoutes = files
+          .filter(f => !path.basename(f).startsWith('_'))   // skip _TEMPLATE
+          .map(f => `/blog/${path.basename(f, '.md')}`)
+
+        return [
+          '/',
+          '/blog',
+          '/about',
+          '/contact',
+          '/privacy-policy',
+          '/sitemap.xml',    // pre-builds the sitemap as a static file
+          ...postRoutes,     // pre-builds every blog post page
+        ]
+      },
     },
   },
 
   routeRules: {
-    '/': { prerender: true },
-    '/blog/**': { prerender: true },
-    '/about': { prerender: true },
-    '/contact': { prerender: true },
+    '/':               { prerender: true },
+    '/blog':           { prerender: true },
+    '/about':          { prerender: true },
+    '/contact':        { prerender: true },
     '/privacy-policy': { prerender: true },
+    '/blog/**':        { prerender: true },
+    '/sitemap.xml':    { prerender: true },
   },
 })
