@@ -4,7 +4,23 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
     '@nuxtjs/tailwindcss',
+    'nuxt-simple-sitemap',          // ← auto-generates /sitemap.xml
   ],
+
+  // Sitemap configuration
+  sitemap: {
+    siteUrl: 'https://techsolvelab.com',
+    // Auto-discovers all prerendered routes including /blog/post-slug
+    autoLastmod: true,
+    // Priority hints for Google
+    urls: [
+      { loc: '/',               priority: 1.0, changefreq: 'weekly'  },
+      { loc: '/blog',           priority: 0.9, changefreq: 'daily'   },
+      { loc: '/about',          priority: 0.5, changefreq: 'monthly' },
+      { loc: '/contact',        priority: 0.4, changefreq: 'monthly' },
+      { loc: '/privacy-policy', priority: 0.3, changefreq: 'monthly' },
+    ],
+  },
 
   // Base URL — set via env in GitHub Actions workflow.
   // With custom domain (techsolvelab.com) this is '/'.
@@ -60,6 +76,7 @@ export default defineNuxtConfig({
         '/about',
         '/contact',
         '/privacy-policy',
+        '/sitemap.xml',       // ← pre-build the sitemap as a static file
       ],
       failOnError: false,
     },
@@ -73,4 +90,3 @@ export default defineNuxtConfig({
     '/privacy-policy': { prerender: true },
   },
 })
-
