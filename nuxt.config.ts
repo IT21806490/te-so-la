@@ -1,25 +1,16 @@
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  css: ['~/assets/css/main.css'],
 
   modules: [
     '@nuxt/content',
     '@nuxtjs/tailwindcss',
   ],
 
-  content: {
-    highlight: {
-      theme: 'github-light',
-      langs: ['js', 'ts', 'html', 'css', 'bash', 'json', 'python'],
-    },
-    markdown: {
-      anchorLinks: false,
-    },
-  },
-
+  // Base URL — set via env in GitHub Actions workflow.
+  // With custom domain (techsolvelab.com) this is '/'.
+  // Without custom domain it is '/te-so-la/' (your repo name).
   app: {
-    baseURL: '/te-so-la/',  
-    buildAssetsDir: '/_nuxt/',
+    baseURL: process.env.NUXT_APP_BASE_URL || '/te-so-la/',
 
     head: {
       charset: 'utf-8',
@@ -38,7 +29,7 @@ export default defineNuxtConfig({
           href: 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap',
         },
       ],
-      // ─── Google AdSense ────────────────────────────────────────────────────
+      // ─── Google AdSense ─────────────────────────────────────────────────
       // Uncomment and replace YOUR_PUBLISHER_ID after AdSense approval:
       // script: [
       //   {
@@ -50,10 +41,26 @@ export default defineNuxtConfig({
     },
   },
 
+  content: {
+    highlight: {
+      theme: 'github-light',
+      langs: ['js', 'ts', 'html', 'css', 'bash', 'json', 'python'],
+    },
+    markdown: {
+      anchorLinks: false,
+    },
+  },
+
   nitro: {
     prerender: {
       crawlLinks: true,
-      routes: ['/', '/blog', '/about', '/contact', '/privacy-policy', '/sitemap.xml'],
+      routes: [
+        '/',
+        '/blog',
+        '/about',
+        '/contact',
+        '/privacy-policy',
+      ],
       failOnError: false,
     },
   },
@@ -61,5 +68,9 @@ export default defineNuxtConfig({
   routeRules: {
     '/': { prerender: true },
     '/blog/**': { prerender: true },
+    '/about': { prerender: true },
+    '/contact': { prerender: true },
+    '/privacy-policy': { prerender: true },
   },
 })
+
