@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   // With custom domain (techsolvelab.com) this is '/'.
   // Without custom domain it is '/te-so-la/' (your repo name).
   app: {
-    baseURL: process.env.NUXT_APP_BASE_URL || '/te-so-la/',
+    baseURL: process.env.NUXT_APP_BASE_URL || '/',
 
     head: {
       charset: 'utf-8',
