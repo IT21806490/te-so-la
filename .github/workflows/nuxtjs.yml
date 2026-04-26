@@ -17,48 +17,50 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Detect package manager
-        id: detect-package-manager
-        run: |
-          echo "manager=npm" >> $GITHUB_OUTPUT
-          echo "command=install" >> $GITHUB_OUTPUT
-
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "22"
-          cache: npm
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        with:
-          static_site_generator: nuxt
+          node-version: "20"
 
       - name: Install dependencies
         run: npm install
 
-      - name: Static HTML export with Nuxt
+      - name: Generate static site
         run: npm run generate
+        env:
+          NODE_ENV: production
+          # ── IMPORTANT ──────────────────────────────────────────────────────
+          # If you have a custom domain (techsolvelab.com) configured in
+          # GitHub Pages settings, keep this as '/'.
+          #
+          # If you do NOT have a custom domain yet and access the site at
+          # https://IT21806490.github.io/te-so-la/
+          # change this to: NUXT_APP_BASE_URL: '/te-so-la/'
+          # ───────────────────────────────────────────────────────────────────
+          NUXT_APP_BASE_URL: '/'
+
+      # GitHub Pages 404 fix — copies index.html to 404.html so that
+      # direct URL visits (/blog, /about, etc.) don't show a GitHub 404 page.
+      # Nuxt's client-side router then takes over and shows the right page.
+      - name: Create 404.html for client-side routing
+        run: cp .output/public/index.html .output/public/404.html
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./dist
+          path: .output/public
 
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
     needs: build
-
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4
