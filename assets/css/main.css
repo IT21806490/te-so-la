@@ -1,0 +1,359 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─────────────────────────────────────────────
+   CUSTOM SCROLLBAR
+───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+::selection { background: #fed7aa; color: #0f172a; }
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Manrope', system-ui, sans-serif;
+  background-color: #fafaf8;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─────────────────────────────────────────────
+   KEYFRAME ANIMATIONS
+───────────────────────────────────────────── */
+
+/* Fade up — used for most scroll reveals */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Fade in — gentle opacity only */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Fade left — slide in from right */
+@keyframes fadeLeft {
+  from { opacity: 0; transform: translateX(30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Fade right — slide in from left */
+@keyframes fadeRight {
+  from { opacity: 0; transform: translateX(-30px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Scale in — pop up from slightly smaller */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Gradient text shimmer — like techieleaders hero */
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating blob pulse */
+@keyframes blobPulse {
+  0%, 100% { transform: scale(1) translate(0, 0); }
+  33%       { transform: scale(1.08) translate(10px, -15px); }
+  66%       { transform: scale(0.95) translate(-8px, 10px); }
+}
+
+/* Typing cursor blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Counter number roll up */
+@keyframes countUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Underline grow */
+@keyframes underlineGrow {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+/* Spinner for loading states */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─────────────────────────────────────────────
+   SCROLL REVEAL SYSTEM
+   Usage: add data-reveal="fade-up" (or fade-in,
+   fade-left, fade-right, scale) to any element.
+   Add data-delay="200" for stagger (ms).
+───────────────────────────────────────────── */
+[data-reveal] {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+[data-reveal="fade-up"]    { transform: translateY(28px); }
+[data-reveal="fade-left"]  { transform: translateX(30px); }
+[data-reveal="fade-right"] { transform: translateX(-30px); }
+[data-reveal="scale"]      { transform: scale(0.92); }
+[data-reveal="fade-in"]    { transform: none; }
+
+[data-reveal].revealed {
+  animation-fill-mode: both;
+  animation-duration: 0.65s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-reveal="fade-up"].revealed    { animation-name: fadeUp; }
+[data-reveal="fade-in"].revealed    { animation-name: fadeIn; }
+[data-reveal="fade-left"].revealed  { animation-name: fadeLeft; }
+[data-reveal="fade-right"].revealed { animation-name: fadeRight; }
+[data-reveal="scale"].revealed      { animation-name: scaleIn; }
+
+/* ─────────────────────────────────────────────
+   ANIMATED GRADIENT TEXT
+   Like techieleaders "innovative digital"
+───────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #f97316, #fb923c, #ea580c, #f97316);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite;
+}
+
+/* Static gradient (no animation, for smaller elements) */
+.gradient-text-static {
+  background: linear-gradient(135deg, #ea580c, #f97316);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─────────────────────────────────────────────
+   HERO BACKGROUND BLOBS  (like techieleaders glow)
+───────────────────────────────────────────── */
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(60px);
+  animation: blobPulse 8s ease-in-out infinite;
+}
+.hero-blob-a {
+  width: 380px; height: 380px;
+  background: rgba(249,115,22,0.18);
+  top: -120px; left: -80px;
+  animation-delay: 0s;
+}
+.hero-blob-b {
+  width: 300px; height: 300px;
+  background: rgba(59,130,246,0.12);
+  top: 20px; right: -60px;
+  animation-delay: -3s;
+}
+.hero-blob-c {
+  width: 200px; height: 200px;
+  background: rgba(139,92,246,0.1);
+  bottom: -40px; left: 40%;
+  animation-delay: -5s;
+}
+
+/* ─────────────────────────────────────────────
+   CARD HOVER LIFT  (enhanced from before)
+───────────────────────────────────────────── */
+.post-card {
+  transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.28s cubic-bezier(0.22,1,0.36,1),
+              border-color 0.2s ease;
+}
+.post-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px -12px rgba(15,23,42,0.14);
+  border-color: rgba(249,115,22,0.3) !important;
+}
+
+/* ─────────────────────────────────────────────
+   BUTTON ANIMATIONS
+───────────────────────────────────────────── */
+.btn-animated {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-animated::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.12);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+.btn-animated:hover::after  { transform: translateX(0); }
+.btn-animated:hover         { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(249,115,22,0.35); }
+.btn-animated:active        { transform: translateY(0); }
+
+/* ─────────────────────────────────────────────
+   NAVBAR ANIMATIONS
+───────────────────────────────────────────── */
+.header-blur {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: background 0.3s ease, box-shadow 0.3s ease, padding 0.3s ease;
+}
+
+/* ─────────────────────────────────────────────
+   LINK UNDERLINE ANIMATION
+   Usage: class="link-underline"
+───────────────────────────────────────────── */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: #f97316;
+  transition: width 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.link-underline:hover::after { width: 100%; }
+
+/* ─────────────────────────────────────────────
+   CATEGORY BADGE
+───────────────────────────────────────────── */
+.cat-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.45rem;
+  transition: transform 0.2s ease;
+  display: inline-block;
+}
+.cat-badge:hover { transform: scale(1.05); }
+
+/* ─────────────────────────────────────────────
+   SECTION TITLE ACCENT LINE
+   Animated underline that grows on reveal
+───────────────────────────────────────────── */
+.section-accent {
+  position: relative;
+  display: inline-block;
+}
+.section-accent::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background: linear-gradient(90deg, #f97316, #fb923c);
+  border-radius: 1px;
+  transition: width 0.6s cubic-bezier(0.22,1,0.36,1) 0.3s;
+}
+.revealed .section-accent::after,
+.section-accent.revealed::after { width: 100%; }
+
+/* ─────────────────────────────────────────────
+   FEATURED POST SHIMMER
+───────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.shimmer-loading {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ─────────────────────────────────────────────
+   STAGGER HELPERS  (use data-delay="N")
+   Example: data-delay="100" = 100ms extra wait
+───────────────────────────────────────────── */
+.stagger-1 { animation-delay: 0.05s !important; }
+.stagger-2 { animation-delay: 0.12s !important; }
+.stagger-3 { animation-delay: 0.19s !important; }
+.stagger-4 { animation-delay: 0.26s !important; }
+.stagger-5 { animation-delay: 0.33s !important; }
+.stagger-6 { animation-delay: 0.40s !important; }
+
+/* ─────────────────────────────────────────────
+   PAGE TRANSITIONS
+───────────────────────────────────────────── */
+.page-enter-active { animation: fadeUp 0.4s cubic-bezier(0.22,1,0.36,1) both; }
+.page-leave-active { animation: fadeIn 0.2s ease reverse both; }
+
+/* ─────────────────────────────────────────────
+   AD SLOTS
+───────────────────────────────────────────── */
+.ad-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: repeating-linear-gradient(
+    45deg, #f8fafc, #f8fafc 10px, #f1f5f9 10px, #f1f5f9 20px
+  );
+  border: 1px dashed #cbd5e1;
+  border-radius: 0.5rem;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ─────────────────────────────────────────────
+   ARTICLE PROSE
+───────────────────────────────────────────── */
+.prose img   { border-radius: 0.75rem; width: 100%; }
+.prose table { font-size: 0.9rem; }
+.prose th    { background: #0f172a; color: white; font-weight: 600; }
+
+/* ─────────────────────────────────────────────
+   TOPOGRAPHIC PATTERN (like techieleaders sections)
+───────────────────────────────────────────── */
+.topo-bg {
+  position: relative;
+}
+.topo-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ─────────────────────────────────────────────
+   REDUCE MOTION ACCESSIBILITY
+───────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal],
+  [data-reveal].revealed,
+  .gradient-text,
+  .hero-blob,
+  .btn-animated,
+  .post-card {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
