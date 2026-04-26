@@ -51,30 +51,45 @@ export default defineNuxtConfig({
     },
   },
 
+  // ── Dynamically add every blog post to the prerender list ──────────────
+  // Uses a hook so @nuxt/content can still call .unshift() on the routes array
+  hooks: {
+    async 'nitro:config'(nitroConfig) {
+      if (nitroConfig.dev) return
+
+      const files = await globby('content/posts/*.md', {
+        cwd: path.resolve(process.cwd()),
+      })
+
+      const postRoutes = files
+        .filter(f => !path.basename(f).startsWith('_'))  // skip _TEMPLATE
+        .map(f => `/blog/${path.basename(f, '.md')}`)
+
+      // Merge with existing routes array (keep it as an array, not a function)
+      const existing = Array.isArray(nitroConfig.prerender?.routes)
+        ? nitroConfig.prerender!.routes as string[]
+        : []
+
+      nitroConfig.prerender!.routes = [
+        ...existing,
+        ...postRoutes,
+      ]
+    },
+  },
+
   nitro: {
     prerender: {
       crawlLinks: true,
       failOnError: false,
-      // Statically prerender all these routes at build time
-      routes: async () => {
-        // Discover every .md file in content/posts and turn it into a route
-        const files = await globby('content/posts/*.md', {
-          cwd: path.resolve(process.cwd()),
-        })
-        const postRoutes = files
-          .filter(f => !path.basename(f).startsWith('_'))   // skip _TEMPLATE
-          .map(f => `/blog/${path.basename(f, '.md')}`)
-
-        return [
-          '/',
-          '/blog',
-          '/about',
-          '/contact',
-          '/privacy-policy',
-          '/sitemap.xml',    // pre-builds the sitemap as a static file
-          ...postRoutes,     // pre-builds every blog post page
-        ]
-      },
+      // Static routes as a plain array — @nuxt/content needs this to be an array
+      routes: [
+        '/',
+        '/blog',
+        '/about',
+        '/contact',
+        '/privacy-policy',
+        '/sitemap.xml',
+      ],
     },
   },
 
