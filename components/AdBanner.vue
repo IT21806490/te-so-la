@@ -46,7 +46,7 @@ const props = defineProps({
 // The Sites card in AdSense dashboard must show a green tick first.
 // Also replace YOUR_AD_SLOT_ID above with your real slot ID.
 // ────────────────────────────────────────────────────────────────────
-const adsenseEnabled = false
+const adsenseEnabled = true
 
 const adRef = ref(null)
 
