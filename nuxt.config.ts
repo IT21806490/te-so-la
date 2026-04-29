@@ -29,15 +29,15 @@ export default defineNuxtConfig({
           href: 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap',
         },
       ],
-      // ─── Google AdSense ─────────────────────────────────────────────────
-      // Uncomment and replace YOUR_PUBLISHER_ID after AdSense approval:
-      // script: [
-      //   {
-      //     async: true,
-      //     src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_PUBLISHER_ID',
-      //     crossorigin: 'anonymous',
-      //   },
-      // ],
+      ─── Google AdSense ─────────────────────────────────────────────────
+      Uncomment and replace YOUR_PUBLISHER_ID after AdSense approval:
+      script: [
+        {
+          async: true,
+          src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5769619247124269',
+          crossorigin: 'anonymous',
+        },
+      ],
     },
   },
 
