@@ -1,11 +1,7 @@
 <template>
-  <!-- ═══════════════════════════════════════════════════════════════════
-       AD SLOT — Replace the placeholder div with your real AdSense code
-       after approval. See comments below.
-       ══════════════════════════════════════════════════════════════════ -->
   <div :class="['my-6', wrapClass]">
 
-    <!-- ── STEP 1: While waiting for AdSense approval ─────────────────── -->
+    <!-- Placeholder shown while waiting for AdSense approval -->
     <div
       v-if="!adsenseEnabled"
       class="ad-slot"
@@ -14,9 +10,10 @@
       Ad Space · {{ size }}
     </div>
 
-    <!-- ── STEP 2: After AdSense approval — uncomment this block ──────── -->
-    <!--
+    <!-- Live AdSense unit — shows after adsenseEnabled = true -->
     <ins
+      v-else
+      ref="adRef"
       class="adsbygoogle"
       style="display:block"
       :data-ad-client="publisherId"
@@ -24,21 +21,42 @@
       :data-ad-format="format"
       data-full-width-responsive="true"
     ></ins>
-    -->
+
   </div>
 </template>
 
 <script setup>
-defineProps({
-  size:          { type: String, default: '728×90 Leaderboard' },
-  wrapClass:     { type: String, default: '' },
-  slotStyle:     { type: Object, default: () => ({ height: '90px' }) },
-  // ─── AdSense props (use after approval) ──────────────────────────
-  // publisherId: { type: String, default: 'ca-pub-XXXXXXXXXXXXXXXX' },
-  // adSlot:      { type: String, default: '1234567890' },
-  // format:      { type: String, default: 'auto' },
+const props = defineProps({
+  size:        { type: String, default: '728×90 Leaderboard' },
+  wrapClass:   { type: String, default: '' },
+  slotStyle:   { type: Object, default: () => ({ height: '90px' }) },
+  publisherId: { type: String, default: 'ca-pub-5769619247124269' },
+
+  // ── HOW TO GET YOUR REAL AD SLOT ID ────────────────────────────────
+  // 1. Go to AdSense → Ads → By ad unit → Create new ad unit
+  // 2. Choose "Display ads" → name it → click Create
+  // 3. Copy the number from data-ad-slot="XXXXXXXXXX" in the code shown
+  // 4. Replace the value below with that number
+  // ───────────────────────────────────────────────────────────────────
+  adSlot:  { type: String, default: '1148068935' },
+  format:  { type: String, default: 'auto' },
 })
 
-// Set to true after AdSense approval and uncomment the <ins> block above
+// ── SET THIS TO true AFTER ADSENSE SITE IS APPROVED ────────────────
+// The Sites card in AdSense dashboard must show a green tick first.
+// Also replace YOUR_AD_SLOT_ID above with your real slot ID.
+// ────────────────────────────────────────────────────────────────────
 const adsenseEnabled = false
+
+const adRef = ref(null)
+
+onMounted(() => {
+  if (!adsenseEnabled) return
+  try {
+    // Initialize the ad unit — required for AdSense to render the ad
+    ;(window.adsbygoogle = window.adsbygoogle || []).push({})
+  } catch (e) {
+    console.error('AdSense init error:', e)
+  }
+})
 </script>
